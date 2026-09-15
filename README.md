@@ -1,4 +1,4 @@
-# 💳 Credit Card Fraud Detection System
+# 🛡️ AegisPay — ML Financial Fraud Detection & Risk Scoring System
 
 A professional, fully-functional Python application for validating credit cards and detecting potential fraud using advanced algorithms and machine learning techniques.
 
