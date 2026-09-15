@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegisPay — ML Financial Fraud Detection & Risk Scoring System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-shield">🛡️</div>
+        <div>
+          <h1>AegisPay <span class="badge-tag">ENTERPRISE ML</span></h1>
+          <p class="subtitle">Real-Time Payment Fraud Classification & Anomaly Detection Pipeline</p>
+        </div>
+      </div>
+      <div class="nav-telemetry">
+        <div class="tele-chip"><span class="pulse-dot"></span> ML Pipeline: <strong>Active (RandomForest + IsolationForest)</strong></div>
+        <div class="tele-chip">Latency: <strong id="latency-tag">~22ms</strong></div>
+      </div>
+    </header>
+
+    <!-- Quick Attack & Test Scenarios -->
+    <section class="preset-bar">
+      <span class="preset-label">⚡ Fast Scenarios:</span>
+      <button class="preset-btn" onclick="loadScenario('legit')">☕ Everyday Grocery ($18.50)</button>
+      <button class="preset-btn alert-btn" onclick="loadScenario('crypto')">🚨 03:00 AM Overseas Crypto ($2,400)</button>
+      <button class="preset-btn warn-btn" onclick="loadScenario('probing')">🔍 Card Testing Probe ($0.01)</button>
+      <button class="preset-btn alert-btn" onclick="loadScenario('invalid')">❌ Fake Luhn Checksum</button>
+    </section>
+
+    <!-- Main Workspace Grid -->
+    <main class="grid-layout">
+      <!-- Left: Transaction Input & Terminal -->
+      <section class="card terminal-card">
+        <div class="card-header">
+          <h2>💳 Transaction Intake Gateway</h2>
+          <span class="secure-badge">🔒 In-Memory Inspection</span>
+        </div>
+
+        <form id="tx-form" onsubmit="event.preventDefault(); submitAnalysis();">
+          <div class="form-group">
+            <label>Primary Account Number (PAN):</label>
+            <div class="input-icon-wrap">
+              <input type="text" id="card_number" placeholder="4532 0156 9874 1250" required autocomplete="off" oninput="handleCardInput(this)">
+              <span id="network-badge" class="network-tag">Visa</span>
+            </div>
+          </div>
+
+          <div class="form-row three-col">
+            <div class="form-group">
+              <label>Exp Month (MM):</label>
+              <input type="text" id="exp_month" placeholder="12" maxlength="2" required value="12">
+            </div>
+            <div class="form-group">
+              <label>Exp Year (YYYY):</label>
+              <input type="text" id="exp_year" placeholder="2028" maxlength="4" required value="2028">
+            </div>
+            <div class="form-group">
+              <label>CVV / CVC:</label>
+              <input type="password" id="cvv" placeholder="345" maxlength="4" required value="345">
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label>Amount (USD $):</label>
+              <input type="number" step="0.01" id="amount" placeholder="45.00" required value="45.00">
+            </div>
+            <div class="form-group">
+              <label>Merchant Category (MCC):</label>
+              <select id="mcc_category">
+                <option value="groceries">Groceries & Supermarket (Low Risk)</option>
+                <option value="retail" selected>General Retail (Low Risk)</option>
+                <option value="travel">Airline & Travel (Moderate)</option>
+                <option value="electronics">Consumer Electronics (Elevated)</option>
+                <option value="digital_goods">Digital Gift Cards (High Risk)</option>
+                <option value="luxury">Luxury Jewelry & Watches (High Risk)</option>
+                <option value="cryptocurrency">Cryptocurrency Exchange (Critical)</option>
+                <option value="casino">Offshore Gambling / Casino (Critical)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Merchant Name:</label>
+            <input type="text" id="merchant_name" placeholder="Target Stores" value="Target Stores">
+          </div>
+
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label>Distance From Home: <span id="dist-val">4 km</span></label>
+              <input type="range" id="distance" min="1" max="2500" value="4" oninput="document.getElementById('dist-val').innerText = this.value + ' km'">
+            </div>
+            <div class="form-group checkbox-group">
+              <label class="chk-label">
+                <input type="checkbox" id="is_foreign"> Cross-Border / Foreign Tx
+              </label>
+              <label class="chk-label">
+                <input type="checkbox" id="night_tx"> Force Midnight Temporal Window
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" id="submit-btn" class="action-btn">
+            <span>🛡️ Analyze & Score Transaction</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Real-time Telemetry & Risk Verdict -->
+      <section class="card verdict-card">
+        <div class="card-header">
+          <h2>📊 Risk Engine Telemetry</h2>
+          <span id="tx-id-tag" class="tx-pill">Waiting for submission</span>
+        </div>
+
+        <div id="verdict-banner" class="verdict-banner verdict-approve">
+          <div class="verdict-icon" id="verdict-icon">✅</div>
+          <div>
+            <div class="verdict-title" id="decision-text">APPROVED</div>
+            <div class="verdict-desc" id="tier-text">Risk Tier: LOW (Normal Consumer Baseline)</div>
+          </div>
+        </div>
+
+        <!-- Gauge & Submetrics -->
+        <div class="metrics-grid">
+          <div class="metric-box gauge-box">
+            <div class="metric-title">Composite Risk Index</div>
+            <div class="score-display">
+              <span id="total-score" class="big-score">8.5</span><span class="score-den">/100</span>
+            </div>
+            <div class="gauge-bar-track">
+              <div id="gauge-bar-fill" class="gauge-bar-fill" style="width: 8.5%"></div>
+            </div>
+          </div>
+
+          <div class="metric-box">
+            <div class="metric-title">ML Fraud Probability</div>
+            <div class="stat-number" id="ml-prob">3.2%</div>
+            <div class="stat-sub">RandomForest Model</div>
+          </div>
+
+          <div class="metric-box">
+            <div class="metric-title">Anomaly Outlier Score</div>
+            <div class="stat-number" id="anom-score">12.0%</div>
+            <div class="stat-sub">IsolationForest Engine</div>
+          </div>
+        </div>
+
+        <!-- Risk Factors -->
+        <div class="factors-section">
+          <h3>Triggered Behavioral & Rule Signals</h3>
+          <ul id="risk-factors-list" class="signals-list">
+            <li class="signal-item ok-item">Transaction behavioral pattern aligns with normal consumer baseline</li>
+          </ul>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recs-section">
+          <h3>Settlement Recommendations</h3>
+          <ul id="recs-list" class="recs-list">
+            <li>Transaction is low risk. Clear for immediate zero-friction settlement.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Ledger Table -->
+    <section class="card ledger-card">
+      <div class="card-header">
+        <h2>📑 Live Transaction Audit Ledger</h2>
+        <span class="ledger-count">Real-Time In-Memory Stream</span>
+      </div>
+      <div class="table-responsive">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>TX ID</th>
+              <th>Masked Card</th>
+              <th>Network</th>
+              <th>Amount</th>
+              <th>Merchant</th>
+              <th>Risk Score</th>
+              <th>Decision</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body">
+            <tr>
+              <td colspan="8" class="empty-cell">No transactions analyzed in current session yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>AegisPay • Engineered with Python, FastAPI & Scikit-Learn by <strong>Yug Nanda</strong></div>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
