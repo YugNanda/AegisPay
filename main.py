@@ -186,15 +186,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-static_dir = os.path.join(os.path.dirname(__file__), "web", "static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(BASE_DIR, "web", "static")
+if not os.path.exists(static_dir):
+    static_dir = BASE_DIR
+
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 @app.get("/")
 def serve_dashboard():
-    index_path = os.path.join(static_dir, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
+    for candidate in [
+        os.path.join(BASE_DIR, "web", "static", "index.html"),
+        os.path.join(BASE_DIR, "index.html"),
+        os.path.join(static_dir, "index.html"),
+    ]:
+        if os.path.exists(candidate):
+            return FileResponse(candidate, media_type="text/html")
     return {"message": "AegisPay Engine Active. Static UI directory not found."}
 
 @app.post("/api/v1/analyze", response_model=TransactionResponse)
