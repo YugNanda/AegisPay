@@ -1,211 +1,959 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta char⚡et="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-⚡cale=1.0" />
-  <title>Aegi⚡Pay — ML Financial Fraud Detection & Ri⚡k Scoring Sy⚡tem</title>
-  <link rel="preconnect" href="http⚡://font⚡.googleapi⚡.com">
-  <link rel="preconnect" href="http⚡://font⚡.g⚡tatic.com" cro⚡⚡origin>
-  <link href="http⚡://font⚡.googleapi⚡.com/c⚡⚡2•family=Outfit:wght@400;500;600;700;800&family=JetBrain⚡+Mono:wght@400;500;600&di⚡play=⚡wap" rel="⚡tyle⚡heet">
-  <link rel="⚡tyle⚡heet" href="/⚡tatic/⚡tyle.c⚡⚡" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegisPay — Enterprise ML Payment Fraud Detection & Risk Scoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg-primary: #0a0d14;
+  --bg-surface: #111722;
+  --bg-card: rgba(18, 25, 38, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(56, 189, 248, 0.25);
+  
+  --color-primary: #38bdf8;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #6366f1;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.07) 0%, transparent 40%),
+                    radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.07) 0%, transparent 40%);
+  color: var(--text-main);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  padding: 18px 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-shield {
+  font-size: 32px;
+}
+
+.brand h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #0284c7, #6366f1);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.nav-telemetry {
+  display: flex;
+  gap: 12px;
+}
+
+.tele-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tele-chip strong {
+  color: var(--text-main);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-success);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--color-success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Preset Bar */
+.preset-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.preset-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.preset-btn:hover {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: var(--color-primary);
+  color: var(--text-main);
+}
+
+.alert-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-danger);
+}
+
+.warn-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--color-warning);
+}
+
+/* Main Grid */
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.secure-badge, .tx-pill, .network-tag {
+  font-size: 11px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: var(--color-primary);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.form-row {
+  display: grid;
+  gap: 12px;
+}
+
+.two-col { grid-template-columns: 1fr 1fr; }
+.three-col { grid-template-columns: 1fr 1fr 1fr; }
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-wrap input {
+  padding-right: 90px;
+}
+
+.input-icon-wrap .network-tag {
+  position: absolute;
+  right: 10px;
+}
+
+.checkbox-group {
+  justify-content: center;
+}
+
+.chk-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.action-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(2, 132, 199, 0.5);
+}
+
+/* Verdict Display */
+.verdict-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.verdict-approve {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.verdict-warn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.verdict-decline {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.verdict-icon {
+  font-size: 28px;
+}
+
+.verdict-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.verdict-desc {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* Metrics */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metric-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metric-title {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.big-score {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--color-success);
+}
+
+.score-den {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-main);
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.gauge-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  background: var(--color-success);
+  border-radius: 4px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+/* Factors & Recommendations */
+.factors-section, .recs-section {
+  margin-top: 14px;
+}
+
+.factors-section h3, .recs-section h3 {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.signals-list, .recs-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.signal-item, .recs-list li {
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+}
+
+.signal-item.danger-item {
+  border-left: 3px solid var(--color-danger);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.signal-item.ok-item {
+  border-left: 3px solid var(--color-success);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+/* Ledger Table */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ledger-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ledger-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.empty-cell {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 30px !important;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-APPROVED { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.badge-STEP_UP_2FA { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+.badge-MANUAL_REVIEW { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.badge-DECLINE { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+.footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 12px;
+}
+
+</style>
 </head>
 <body>
-  <div cla⚡⚡="app-container">
+  <div class="app-container">
     <!-- Header -->
-    <header cla⚡⚡="navbar">
-      <div cla⚡⚡="brand">
-        <div cla⚡⚡="brand-⚡hield">🛡️</div>
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-shield">🛡️</div>
         <div>
-          <h1>Aegi⚡Pay <⚡pan cla⚡⚡="badge-tag">ENTERPRISE ML</⚡pan></h1>
-          <p cla⚡⚡="⚡ubtitle">Real-Time Payment Fraud Cla⚡⚡ification & Anomaly Detection Pipeline</p>
+          <h1>AegisPay <span class="badge-tag">ENTERPRISE ML</span></h1>
+          <p class="subtitle">Real-Time Payment Fraud Classification & Anomaly Detection Pipeline</p>
         </div>
       </div>
-      <div cla⚡⚡="nav-telemetry">
-        <div cla⚡⚡="tele-chip"><⚡pan cla⚡⚡="pul⚡e-dot"></⚡pan> ML Pipeline: <⚡trong>Active (RandomFore⚡t + I⚡olationFore⚡t)</⚡trong></div>
-        <div cla⚡⚡="tele-chip">Latency: <⚡trong id="latency-tag">~22m⚡</⚡trong></div>
+      <div class="nav-telemetry">
+        <div class="tele-chip"><span class="pulse-dot"></span> ML Pipeline: <strong>Active (RandomForest + IsolationForest)</strong></div>
+        <div class="tele-chip">Latency: <strong id="latency-tag">~22ms</strong></div>
       </div>
     </header>
 
-    <!-- Quick Attack & Te⚡t Scenario⚡ -->
-    <⚡ection cla⚡⚡="pre⚡et-bar">
-      <⚡pan cla⚡⚡="pre⚡et-label">⚡ Fa⚡t Scenario⚡:</⚡pan>
-      <button cla⚡⚡="pre⚡et-btn" onclick="loadScenario('legit')">🛒 Everyday Grocery ($18.50)</button>
-      <button cla⚡⚡="pre⚡et-btn alert-btn" onclick="loadScenario('crypto')">🚨 03:00 AM Over⚡ea⚡ Crypto ($2,400)</button>
-      <button cla⚡⚡="pre⚡et-btn warn-btn" onclick="loadScenario('probing')">🔍 Card Te⚡ting Probe ($0.01)</button>
-      <button cla⚡⚡="pre⚡et-btn alert-btn" onclick="loadScenario('invalid')">❌ Fake Luhn Check⚡um</button>
-    </⚡ection>
+    <!-- Quick Attack & Test Scenarios -->
+    <section class="preset-bar">
+      <span class="preset-label">⚡ Fast Attack & Test Scenarios:</span>
+      <button class="preset-btn" onclick="loadScenario('legit')">🛒 Everyday Grocery ($18.50)</button>
+      <button class="preset-btn alert-btn" onclick="loadScenario('crypto')">🚨 03:00 AM Overseas Crypto ($2,400)</button>
+      <button class="preset-btn warn-btn" onclick="loadScenario('probing')">🔍 Card Testing Probe ($0.01)</button>
+      <button class="preset-btn alert-btn" onclick="loadScenario('invalid')">❌ Fake Luhn Checksum</button>
+    </section>
 
-    <!-- Main Work⚡pace Grid -->
-    <main cla⚡⚡="grid-layout">
-      <!-- Left: Tran⚡action Input & Terminal -->
-      <⚡ection cla⚡⚡="card terminal-card">
-        <div cla⚡⚡="card-header">
-          <h2>💳 Tran⚡action Intake Gateway</h2>
-          <⚡pan cla⚡⚡="⚡ecure-badge">🔒 In-Memory In⚡pection</⚡pan>
+    <!-- Main Workspace Grid -->
+    <main class="grid-layout">
+      <!-- Left: Transaction Input & Terminal -->
+      <section class="card terminal-card">
+        <div class="card-header">
+          <h2>💳 Transaction Intake Gateway</h2>
+          <span class="secure-badge">🔒 In-Memory Inspection</span>
         </div>
 
-        <form id="tx-form" on⚡ubmit="event.preventDefault(); ⚡ubmitAnaly⚡i⚡();">
-          <div cla⚡⚡="form-group">
+        <form id="tx-form" onsubmit="event.preventDefault(); submitAnalysis();">
+          <div class="form-group">
             <label>Primary Account Number (PAN):</label>
-            <div cla⚡⚡="input-icon-wrap">
-              <input type="text" id="card_number" placeholder="4532 0156 9874 1250" required autocomplete="off" oninput="handleCardInput(thi⚡)">
-              <⚡pan id="network-badge" cla⚡⚡="network-tag">Vi⚡a</⚡pan>
+            <div class="input-icon-wrap">
+              <input type="text" id="card_number" placeholder="4532 0156 9874 1250" required autocomplete="off" oninput="handleCardInput(this)">
+              <span id="network-badge" class="network-tag">Visa</span>
             </div>
           </div>
 
-          <div cla⚡⚡="form-row three-col">
-            <div cla⚡⚡="form-group">
+          <div class="form-row three-col">
+            <div class="form-group">
               <label>Exp Month (MM):</label>
               <input type="text" id="exp_month" placeholder="12" maxlength="2" required value="12">
             </div>
-            <div cla⚡⚡="form-group">
+            <div class="form-group">
               <label>Exp Year (YYYY):</label>
               <input type="text" id="exp_year" placeholder="2028" maxlength="4" required value="2028">
             </div>
-            <div cla⚡⚡="form-group">
+            <div class="form-group">
               <label>CVV / CVC:</label>
-              <input type="pa⚡⚡word" id="cvv" placeholder="345" maxlength="4" required value="345">
+              <input type="password" id="cvv" placeholder="345" maxlength="4" required value="345">
             </div>
           </div>
 
-          <div cla⚡⚡="form-row two-col">
-            <div cla⚡⚡="form-group">
+          <div class="form-row two-col">
+            <div class="form-group">
               <label>Amount (USD $):</label>
-              <input type="number" ⚡tep="0.01" id="amount" placeholder="45.00" required value="45.00">
+              <input type="number" step="0.01" id="amount" placeholder="45.00" required value="45.00">
             </div>
-            <div cla⚡⚡="form-group">
+            <div class="form-group">
               <label>Merchant Category (MCC):</label>
-              <⚡elect id="mcc_category">
-                <option value="grocerie⚡">Grocerie⚡ & Supermarket (Low Ri⚡k)</option>
-                <option value="retail" ⚡elected>General Retail (Low Ri⚡k)</option>
+              <select id="mcc_category">
+                <option value="groceries">Groceries & Supermarket (Low Risk)</option>
+                <option value="retail" selected>General Retail (Low Risk)</option>
                 <option value="travel">Airline & Travel (Moderate)</option>
-                <option value="electronic⚡">Con⚡umer Electronic⚡ (Elevated)</option>
-                <option value="digital_good⚡">Digital Gift Card⚡ (High Ri⚡k)</option>
-                <option value="luxury">Luxury Jewelry & Watche⚡ (High Ri⚡k)</option>
+                <option value="electronics">Consumer Electronics (Elevated)</option>
+                <option value="digital_goods">Digital Gift Cards (High Risk)</option>
+                <option value="luxury">Luxury Jewelry & Watches (High Risk)</option>
                 <option value="cryptocurrency">Cryptocurrency Exchange (Critical)</option>
-                <option value="ca⚡ino">Off⚡hore Gambling / Ca⚡ino (Critical)</option>
-              </⚡elect>
+                <option value="casino">Offshore Gambling / Casino (Critical)</option>
+              </select>
             </div>
           </div>
 
-          <div cla⚡⚡="form-group">
+          <div class="form-group">
             <label>Merchant Name:</label>
-            <input type="text" id="merchant_name" placeholder="Target Store⚡" value="Target Store⚡">
+            <input type="text" id="merchant_name" placeholder="Target Stores" value="Target Stores">
           </div>
 
-          <div cla⚡⚡="form-row two-col">
-            <div cla⚡⚡="form-group">
-              <label>Di⚡tance From Home: <⚡pan id="di⚡t-val">4 km</⚡pan></label>
-              <input type="range" id="di⚡tance" min="1" max="2500" value="4" oninput="document.getElementById('di⚡t-val').innerText = thi⚡.value + ' km'">
+          <div class="form-row two-col">
+            <div class="form-group">
+              <label>Distance From Home: <span id="dist-val">4 km</span></label>
+              <input type="range" id="distance" min="1" max="2500" value="4" oninput="document.getElementById('dist-val').innerText = this.value + ' km'">
             </div>
-            <div cla⚡⚡="form-group checkbox-group">
-              <label cla⚡⚡="chk-label">
-                <input type="checkbox" id="i⚡_foreign"> Cro⚡⚡-Border / Foreign Tx
+            <div class="form-group checkbox-group">
+              <label class="chk-label">
+                <input type="checkbox" id="is_foreign"> Cross-Border / Foreign Tx
               </label>
-              <label cla⚡⚡="chk-label">
+              <label class="chk-label">
                 <input type="checkbox" id="night_tx"> Force Midnight Temporal Window
               </label>
             </div>
           </div>
 
-          <button type="⚡ubmit" id="⚡ubmit-btn" cla⚡⚡="action-btn">
-            <⚡pan>🛡️ Analyze & Score Tran⚡action</⚡pan>
+          <button type="submit" id="submit-btn" class="action-btn">
+            <span>🛡️ Analyze & Score Transaction</span>
           </button>
         </form>
-      </⚡ection>
+      </section>
 
-      <!-- Right: Real-time Telemetry & Ri⚡k Verdict -->
-      <⚡ection cla⚡⚡="card verdict-card">
-        <div cla⚡⚡="card-header">
-          <h2>📊 Ri⚡k Engine Telemetry</h2>
-          <⚡pan id="tx-id-tag" cla⚡⚡="tx-pill">Waiting for ⚡ubmi⚡⚡ion</⚡pan>
+      <!-- Right: Real-time Telemetry & Risk Verdict -->
+      <section class="card verdict-card">
+        <div class="card-header">
+          <h2>📊 Risk Engine Telemetry</h2>
+          <span id="tx-id-tag" class="tx-pill">Waiting for submission</span>
         </div>
 
-        <div id="verdict-banner" cla⚡⚡="verdict-banner verdict-approve">
-          <div cla⚡⚡="verdict-icon" id="verdict-icon">✅</div>
+        <div id="verdict-banner" class="verdict-banner verdict-approve">
+          <div class="verdict-icon" id="verdict-icon">✅</div>
           <div>
-            <div cla⚡⚡="verdict-title" id="deci⚡ion-text">APPROVED</div>
-            <div cla⚡⚡="verdict-de⚡c" id="tier-text">Ri⚡k Tier: LOW (Normal Con⚡umer Ba⚡eline)</div>
+            <div class="verdict-title" id="decision-text">APPROVED</div>
+            <div class="verdict-desc" id="tier-text">Risk Tier: LOW (Normal Consumer Baseline)</div>
           </div>
         </div>
 
-        <!-- Gauge & Submetric⚡ -->
-        <div cla⚡⚡="metric⚡-grid">
-          <div cla⚡⚡="metric-box gauge-box">
-            <div cla⚡⚡="metric-title">Compo⚡ite Ri⚡k Index</div>
-            <div cla⚡⚡="⚡core-di⚡play">
-              <⚡pan id="total-⚡core" cla⚡⚡="big-⚡core">8.5</⚡pan><⚡pan cla⚡⚡="⚡core-den">/100</⚡pan>
+        <!-- Gauge & Submetrics -->
+        <div class="metrics-grid">
+          <div class="metric-box gauge-box">
+            <div class="metric-title">Composite Risk Index</div>
+            <div class="score-display">
+              <span id="total-score" class="big-score">8.5</span><span class="score-den">/100</span>
             </div>
-            <div cla⚡⚡="gauge-bar-track">
-              <div id="gauge-bar-fill" cla⚡⚡="gauge-bar-fill" ⚡tyle="width: 8.5%"></div>
+            <div class="gauge-bar-track">
+              <div id="gauge-bar-fill" class="gauge-bar-fill" style="width: 8.5%"></div>
             </div>
           </div>
 
-          <div cla⚡⚡="metric-box">
-            <div cla⚡⚡="metric-title">ML Fraud Probability</div>
-            <div cla⚡⚡="⚡tat-number" id="ml-prob">3.2%</div>
-            <div cla⚡⚡="⚡tat-⚡ub">RandomFore⚡t Model</div>
+          <div class="metric-box">
+            <div class="metric-title">ML Fraud Probability</div>
+            <div class="stat-number" id="ml-prob">3.2%</div>
+            <div class="stat-sub">RandomForest Model</div>
           </div>
 
-          <div cla⚡⚡="metric-box">
-            <div cla⚡⚡="metric-title">Anomaly Outlier Score</div>
-            <div cla⚡⚡="⚡tat-number" id="anom-⚡core">12.0%</div>
-            <div cla⚡⚡="⚡tat-⚡ub">I⚡olationFore⚡t Engine</div>
+          <div class="metric-box">
+            <div class="metric-title">Anomaly Outlier Score</div>
+            <div class="stat-number" id="anom-score">12.0%</div>
+            <div class="stat-sub">IsolationForest Engine</div>
           </div>
         </div>
 
-        <!-- Ri⚡k Factor⚡ -->
-        <div cla⚡⚡="factor⚡-⚡ection">
-          <h3>Triggered Behavioral & Rule Signal⚡</h3>
-          <ul id="ri⚡k-factor⚡-li⚡t" cla⚡⚡="⚡ignal⚡-li⚡t">
-            <li cla⚡⚡="⚡ignal-item ok-item">Tran⚡action behavioral pattern align⚡ with normal con⚡umer ba⚡eline</li>
+        <!-- Risk Factors -->
+        <div class="factors-section">
+          <h3>Triggered Behavioral & Rule Signals</h3>
+          <ul id="risk-factors-list" class="signals-list">
+            <li class="signal-item ok-item">Transaction behavioral pattern aligns with normal consumer baseline</li>
           </ul>
         </div>
 
-        <!-- Recommendation⚡ -->
-        <div cla⚡⚡="rec⚡-⚡ection">
-          <h3>Settlement Recommendation⚡</h3>
-          <ul id="rec⚡-li⚡t" cla⚡⚡="rec⚡-li⚡t">
-            <li>Tran⚡action i⚡ low ri⚡k. Clear for immediate zero-friction ⚡ettlement.</li>
+        <!-- Recommendations -->
+        <div class="recs-section">
+          <h3>Settlement Recommendations</h3>
+          <ul id="recs-list" class="recs-list">
+            <li>Transaction is low risk. Clear for immediate zero-friction settlement.</li>
           </ul>
         </div>
-      </⚡ection>
+      </section>
     </main>
 
     <!-- Ledger Table -->
-    <⚡ection cla⚡⚡="card ledger-card">
-      <div cla⚡⚡="card-header">
-        <h2>📑 Live Tran⚡action Audit Ledger</h2>
-        <⚡pan cla⚡⚡="ledger-count">Real-Time In-Memory Stream</⚡pan>
+    <section class="card ledger-card">
+      <div class="card-header">
+        <h2>📑 Live Transaction Audit Ledger</h2>
+        <span class="ledger-count">Real-Time In-Memory Stream</span>
       </div>
-      <div cla⚡⚡="table-re⚡pon⚡ive">
-        <table cla⚡⚡="ledger-table">
+      <div class="table-responsive">
+        <table class="ledger-table">
           <thead>
             <tr>
-              <th>Time⚡tamp</th>
+              <th>Timestamp</th>
               <th>TX ID</th>
-              <th>Ma⚡ked Card</th>
+              <th>Masked Card</th>
               <th>Network</th>
               <th>Amount</th>
               <th>Merchant</th>
-              <th>Ri⚡k Score</th>
-              <th>Deci⚡ion</th>
+              <th>Risk Score</th>
+              <th>Decision</th>
             </tr>
           </thead>
           <tbody id="ledger-body">
             <tr>
-              <td col⚡pan="8" cla⚡⚡="empty-cell">No tran⚡action⚡ analyzed in current ⚡e⚡⚡ion yet.</td>
+              <td colspan="8" class="empty-cell">No transactions analyzed in current session yet.</td>
             </tr>
           </tbody>
         </table>
       </div>
-    </⚡ection>
+    </section>
 
-    <footer cla⚡⚡="footer">
-      <div>Aegi⚡Pay • Engineered with Python, Fa⚡tAPI & Scikit-Learn by <⚡trong>Yug Nanda</⚡trong></div>
-    </footer>
+    <footer class="footer"><div>AegisPay • Engineered with Python, FastAPI & Scikit-Learn by <strong>Yug Nanda</strong></div></footer>
   </div>
 
-  <⚡cript ⚡rc="/⚡tatic/app.j⚡"></⚡cript>
+  <script>
+// AegisPay Real-Time Frontend Controller
+
+const scenarios = {
+  legit: {
+    card: "4532015698741250",
+    month: "12",
+    year: "2028",
+    cvv: "345",
+    amount: "18.50",
+    merchant: "Whole Foods Market",
+    mcc: "groceries",
+    dist: 3,
+    foreign: false,
+    night: false
+  },
+  crypto: {
+    card: "4532015698741250",
+    month: "12",
+    year: "2028",
+    cvv: "345",
+    amount: "2400.00",
+    merchant: "Panama Crypto Exchange Ltd",
+    mcc: "cryptocurrency",
+    dist: 1250,
+    foreign: true,
+    night: true
+  },
+  probing: {
+    card: "4532015698741250",
+    month: "12",
+    year: "2028",
+    cvv: "345",
+    amount: "0.01",
+    merchant: "Online Digital Store",
+    mcc: "digital_goods",
+    dist: 15,
+    foreign: false,
+    night: false
+  },
+  invalid: {
+    card: "4532015698741259", // Invalid Luhn
+    month: "02",
+    year: "2022", // Expired
+    cvv: "99",
+    amount: "150.00",
+    merchant: "ElectroHub Retail",
+    mcc: "electronics",
+    dist: 45,
+    foreign: false,
+    night: false
+  }
+};
+
+function loadScenario(type) {
+  const sc = scenarios[type];
+  if (!sc) return;
+
+  document.getElementById('card_number').value = sc.card;
+  document.getElementById('exp_month').value = sc.month;
+  document.getElementById('exp_year').value = sc.year;
+  document.getElementById('cvv').value = sc.cvv;
+  document.getElementById('amount').value = sc.amount;
+  document.getElementById('merchant_name').value = sc.merchant;
+  document.getElementById('mcc_category').value = sc.mcc;
+  document.getElementById('distance').value = sc.dist;
+  document.getElementById('dist-val').innerText = sc.dist + " km";
+  document.getElementById('is_foreign').checked = sc.foreign;
+  document.getElementById('night_tx').checked = sc.night;
+
+  handleCardInput(document.getElementById('card_number'));
+  submitAnalysis();
+}
+
+function handleCardInput(el) {
+  const pan = el.value.replace(/\D/g, '');
+  let network = "Unknown";
+  
+  if (/^4/.test(pan)) network = "Visa";
+  else if (/^(5[1-5]|2[2-7])/.test(pan)) network = "MasterCard";
+  else if (/^3[47]/.test(pan)) network = "Amex";
+  else if (/^6(?:011|5)/.test(pan)) network = "Discover";
+  else if (/^(508|60|6521)/.test(pan)) network = "RuPay";
+  
+  document.getElementById('network-badge').innerText = network;
+}
+
+async function submitAnalysis() {
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = "<span>⚙️ Running ML Inference & Rules...</span>";
+
+  const payload = {
+    card: {
+      card_number: document.getElementById('card_number').value.trim(),
+      expiry_month: document.getElementById('exp_month').value.trim(),
+      expiry_year: document.getElementById('exp_year').value.trim(),
+      cvv: document.getElementById('cvv').value.trim(),
+      cardholder_name: "Demo Cardholder"
+    },
+    amount: parseFloat(document.getElementById('amount').value) || 0,
+    currency: "USD",
+    merchant_name: document.getElementById('merchant_name').value.trim(),
+    merchant_category: document.getElementById('mcc_category').value,
+    distance_from_home_km: parseFloat(document.getElementById('distance').value) || 5.0,
+    is_foreign_transaction: document.getElementById('is_foreign').checked,
+    transaction_hour: document.getElementById('night_tx').checked ? 3 : null,
+    device_trust_score: document.getElementById('is_foreign').checked ? 0.35 : 0.95
+  };
+
+  try {
+    const res = await fetch('/api/v1/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    renderVerdict(data);
+    addLedgerRow(data);
+  } catch (err) {
+    alert("Analysis failed: " + err.message);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = "<span>🛡️ Analyze & Score Transaction</span>";
+  }
+}
+
+function renderVerdict(data) {
+  document.getElementById('tx-id-tag').innerText = data.transaction_id;
+  document.getElementById('latency-tag').innerText = data.processing_time_ms + "ms";
+
+  const risk = data.risk;
+  const score = risk.total_risk_score;
+  const decision = risk.decision;
+  const tier = risk.risk_tier;
+
+  const banner = document.getElementById('verdict-banner');
+  const icon = document.getElementById('verdict-icon');
+  const title = document.getElementById('decision-text');
+  const desc = document.getElementById('tier-text');
+  const scoreEl = document.getElementById('total-score');
+  const bar = document.getElementById('gauge-bar-fill');
+
+  scoreEl.innerText = score;
+  bar.style.width = score + "%";
+
+  banner.className = "verdict-banner";
+  if (decision === "APPROVE") {
+    banner.classList.add("verdict-approve");
+    icon.innerText = "✅";
+    title.innerText = "TRANSACTION APPROVED";
+    desc.innerText = `Risk Tier: ${tier} (Clean Behavioral Profile)`;
+    scoreEl.style.color = "var(--color-success)";
+    bar.style.backgroundColor = "var(--color-success)";
+  } else if (decision === "STEP_UP_2FA") {
+    banner.classList.add("verdict-warn");
+    icon.innerText = "🔐";
+    title.innerText = "STEP-UP 2FA CHALLENGE";
+    desc.innerText = `Risk Tier: ${tier} (Secondary Verification Required)`;
+    scoreEl.style.color = "var(--color-primary)";
+    bar.style.backgroundColor = "var(--color-primary)";
+  } else if (decision === "MANUAL_REVIEW") {
+    banner.classList.add("verdict-warn");
+    icon.innerText = "⚠️";
+    title.innerText = "MANUAL FRAUD REVIEW";
+    desc.innerText = `Risk Tier: ${tier} (High-Risk Threshold Detected)`;
+    scoreEl.style.color = "var(--color-warning)";
+    bar.style.backgroundColor = "var(--color-warning)";
+  } else {
+    banner.classList.add("verdict-decline");
+    icon.innerText = "🚫";
+    title.innerText = "TRANSACTION DECLINED";
+    desc.innerText = `Risk Tier: ${tier} (Critical Threat Flagged)`;
+    scoreEl.style.color = "var(--color-danger)";
+    bar.style.backgroundColor = "var(--color-danger)";
+  }
+
+  document.getElementById('ml-prob').innerText = risk.ml_fraud_probability + "%";
+  document.getElementById('anom-score').innerText = risk.anomaly_score + "%";
+
+  // Factors
+  const factorsList = document.getElementById('risk-factors-list');
+  factorsList.innerHTML = "";
+  data.risk_factors.forEach(f => {
+    const li = document.createElement('li');
+    li.className = "signal-item " + (decision === "APPROVE" ? "ok-item" : "danger-item");
+    li.innerText = (decision === "APPROVE" ? "✓ " : "⚠️ ") + f;
+    factorsList.appendChild(li);
+  });
+
+  // Recommendations
+  const recsList = document.getElementById('recs-list');
+  recsList.innerHTML = "";
+  data.recommendations.forEach(r => {
+    const li = document.createElement('li');
+    li.innerText = "• " + r;
+    recsList.appendChild(li);
+  });
+}
+
+function addLedgerRow(data) {
+  const tbody = document.getElementById('ledger-body');
+  if (tbody.querySelector('.empty-cell')) {
+    tbody.innerHTML = "";
+  }
+
+  const tr = document.createElement('tr');
+  const d = new Date(data.timestamp);
+  const timeStr = d.toLocaleTimeString();
+
+  tr.innerHTML = `
+    <td>${timeStr}</td>
+    <td><code>${data.transaction_id}</code></td>
+    <td>${data.masked_card}</td>
+    <td><span class="network-tag">${data.card_network}</span></td>
+    <td>$${data.amount.toFixed(2)}</td>
+    <td>${data.merchant}</td>
+    <td><strong>${data.risk.total_risk_score}</strong>/100</td>
+    <td><span class="status-badge badge-${data.risk.decision}">${data.risk.decision}</span></td>
+  `;
+
+  tbody.insertBefore(tr, tbody.firstChild);
+}
+
+</script>
 </body>
 </html>

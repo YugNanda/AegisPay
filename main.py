@@ -18,7 +18,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 
 from core.models import TransactionRequest, TransactionResponse, ValidationResult, RiskBreakdown
 from core.validator import CardValidator
@@ -194,16 +194,17 @@ if not os.path.exists(static_dir):
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def serve_dashboard():
     for candidate in [
-        os.path.join(BASE_DIR, "web", "static", "index.html"),
         os.path.join(BASE_DIR, "index.html"),
+        os.path.join(BASE_DIR, "web", "static", "index.html"),
         os.path.join(static_dir, "index.html"),
     ]:
         if os.path.exists(candidate):
-            return FileResponse(candidate, media_type="text/html")
-    return {"message": "AegisPay Engine Active. Static UI directory not found."}
+            with open(candidate, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read(), media_type="text/html; charset=utf-8")
+    return HTMLResponse(content="<h1>AegisPay Engine Active</h1><p>Static UI directory not found.</p>", media_type="text/html; charset=utf-8")
 
 @app.post("/api/v1/analyze", response_model=TransactionResponse)
 def analyze_transaction(req: TransactionRequest):
